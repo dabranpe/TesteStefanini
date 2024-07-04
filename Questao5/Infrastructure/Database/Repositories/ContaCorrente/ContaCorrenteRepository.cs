@@ -31,4 +31,14 @@ public class ContaCorrenteRepository : IContaCorrenteRepository
             return conta;
         }
     }
+
+    public async Task<string> AddMovimentoAsync(Movimento movimento)
+    {
+        using (var connection = _context.CreateConnection())
+        {
+            string query = "INSERT INTO Movimento (IdMovimento, IdContaCorrente, DataMovimento, TipoMovimento, Valor) VALUES (@IdMovimento, @IdContaCorrente, @DataMovimento, @TipoMovimento, @Valor); SELECT last_insert_rowid();";
+            var id = await connection.ExecuteScalarAsync<string>(query, movimento);
+            return id;
+        }
+    }
 }

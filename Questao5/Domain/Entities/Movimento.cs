@@ -14,7 +14,7 @@ public class Movimento
     public string IdContaCorrente { get; set; }
 
     [Required]
-    public DateTime DataMovimento { get; set; }
+    public string DataMovimento { get; set; }
 
     [Required]
     [StringLength(1)]
@@ -26,7 +26,7 @@ public class Movimento
 
     public Movimento() { }
 
-    public Movimento(string idMovimento, string idContaCorrente, DateTime dataMovimento, char tipoMovimento, decimal valor)
+    public Movimento(string idMovimento, string idContaCorrente, string dataMovimento, char tipoMovimento, decimal valor)
     {        
 
         IdMovimento = idMovimento;

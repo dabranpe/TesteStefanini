@@ -6,4 +6,5 @@ public interface IContaCorrenteRepository
 {
     Task<IEnumerable<ContaCorrente>> GetAllAsync();
     Task<ContaCorrente> GetByIdAsync(string id);
+    Task<string> AddMovimentoAsync(Movimento movimento);
 }

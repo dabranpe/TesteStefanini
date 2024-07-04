@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Questao5.Domain.Entities;
 using Questao5.Infrastructure.Database;
 
 namespace Questao5.Application.Handlers
@@ -18,7 +19,13 @@ namespace Questao5.Application.Handlers
         public async Task<MovimentarContaResponse> Handle(MovimentarContaRequest request, CancellationToken cancellationToken)
         {
             await _validator.Validar(request);
-            throw new NotImplementedException();
+
+            var movimento = new Movimento(Guid.NewGuid().ToString(), request.IdContaCorrente, DateTime.Now.ToString("dd/MM/yyyy"), request.TipoMovimento, request.Valor);
+
+            await _contaCorrenteRepository.AddMovimentoAsync(movimento);
+
+            return new MovimentarContaResponse { IdMovimento = movimento.IdMovimento };
+
         }
     }
 }
