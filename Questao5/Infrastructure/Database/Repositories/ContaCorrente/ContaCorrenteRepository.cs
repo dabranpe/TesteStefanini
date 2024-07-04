@@ -17,8 +17,18 @@ public class ContaCorrenteRepository : IContaCorrenteRepository
         using (var connection = _context.CreateConnection())
         {
             string query = "SELECT IdContaCorrente, Numero, Nome, Ativo FROM ContaCorrente";
-            var users = await connection.QueryAsync<ContaCorrente>(query);
-            return users;
+            var contas = await connection.QueryAsync<ContaCorrente>(query);
+            return contas;
+        }
+    }
+
+    public async Task<ContaCorrente> GetByIdAsync(string id)
+    {
+        using (var connection = _context.CreateConnection())
+        {
+            string query = $"SELECT IdContaCorrente, Numero, Nome, Ativo FROM ContaCorrente WHERE IdContaCorrente = '{id}'";
+            var conta = await connection.QuerySingleOrDefaultAsync<ContaCorrente>(query);
+            return conta;
         }
     }
 }

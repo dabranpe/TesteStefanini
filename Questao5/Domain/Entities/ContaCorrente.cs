@@ -18,4 +18,15 @@ public class ContaCorrente
 
     [Required]
     public int Ativo { get; set; }
+
+    public ContaCorrente() { }
+
+    public ContaCorrente(string idContaCorrente, int numero, string nome, int ativo)
+    {
+       
+        IdContaCorrente = idContaCorrente;
+        Numero = numero;
+        Nome = nome;
+        Ativo = ativo;
+    }
 }

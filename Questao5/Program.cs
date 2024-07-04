@@ -1,8 +1,13 @@
 using FluentAssertions.Common;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MediatR;
+using Questao5.Application;
+using Questao5.Infrastructure;
 using Questao5.Infrastructure.Database;
 using Questao5.Infrastructure.Sqlite;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +22,9 @@ builder.Services.AddSingleton<IDatabaseBootstrap, DatabaseBootstrap>();
 
 builder.Services.AddSingleton<IDataBaseContext, DatabaseContext>();
 builder.Services.AddScoped<IContaCorrenteRepository, ContaCorrenteRepository>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddScoped(typeof(IValidatorService<>), typeof(ValidatorService<>));
 
 
 
@@ -38,6 +46,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseErrorMiddleware();
 
 // sqlite
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
