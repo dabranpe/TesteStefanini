@@ -11,7 +11,7 @@ public class CustomResponse
         this.success = false;        
     }
 
-    public CustomResponse(List<string> messages, bool success, dynamic data)
+    public CustomResponse(List<string> messages, bool success)
     {
         this.messages = messages;
         this.success = success;        

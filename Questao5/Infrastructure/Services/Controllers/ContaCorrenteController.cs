@@ -30,12 +30,12 @@ namespace Questao5.Infrastructure.Services.Controllers
         /// <returns>Retorna Número da conta corrente, Nome do titular da conta corrente, Data e hora da resposta da consulta e Valor do Saldo atual
         ///</returns>
         [HttpGet("id")]
+        [SwaggerOperation(Summary = "Método para obter o saldo da conta corrente", Description = "Método para obter o saldo da conta corrente")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ConsultarSaldoContaResponse))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ConsultarSaldoContaResponseExample))]
-        [SwaggerRequestExample(typeof(ConsultarSaldoContaRequest), typeof(ConsultarSaldoContaRequestExample))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation(Summary = "Método para obter o saldo da conta corrente", Description = "Método para obter o saldo da conta corrente")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(CustomResponse))]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CustomResponseExample))]        
         public async Task<IActionResult> Get([SwaggerParameter(Description ="Identificador da Conta Corrente")] string id)
         {
             var response = await _mediator.Send(new ConsultarSaldoContaRequest { IdContaCorrente = id });
@@ -49,11 +49,13 @@ namespace Questao5.Infrastructure.Services.Controllers
         /// <param name="item">Método para movimentar conta corrente.</param>
         /// <returns>ID do movimento</returns>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation(Summary = "Método para movimentar conta corrente", Description = "Método para movimentar conta corrente")]
+        [ProducesResponseType(StatusCodes.Status200OK)]        
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(MovimentarContaResponse))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(MovimentarContaResponseExample))]
         [SwaggerRequestExample(typeof(MovimentarContaRequest), typeof(MovimentarContaRequestExample))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(CustomResponse))]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(CustomResponseExample))]
         public async Task<IActionResult> MovimentarConta([FromBody, SwaggerRequestBody(Description ="Dados para movimentação da conta")] MovimentarContaRequest command, [FromHeader(Name = "chaveIdempotencia"), SwaggerParameter(Description ="Identificador da Requisição")] string chaveIdempotencia)
         {
             if (string.IsNullOrEmpty(chaveIdempotencia))

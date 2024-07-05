@@ -52,7 +52,7 @@ public class ErrorMiddleware
         }
     }
 
-    private static string SerializarRetorno(List<string> notificacoes) => JsonSerializer.Serialize(new CustomResponse(notificacoes, false, null));
+    private static string SerializarRetorno(List<string> notificacoes) => JsonSerializer.Serialize(new CustomResponse(notificacoes, false));
 }
 
 public static class ErrorMiddlewareExtensions
