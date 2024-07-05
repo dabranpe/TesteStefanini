@@ -4,6 +4,9 @@ public class CustomResponse
 {
     private const string MensagemSucesso = "Executado com sucesso";
 
+    public CustomResponse() {
+        this.messages = new();
+    }
     public CustomResponse(dynamic data)
     {
         this.messages = new();
