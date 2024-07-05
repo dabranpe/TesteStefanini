@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Questao5.Application;
 using Questao5.Domain.Entities;
 using Questao5.Infrastructure.Database;
@@ -10,35 +11,48 @@ namespace Questao5.Infrastructure.Services.Controllers
     [Route("[controller]")]
     public class ContaCorrenteController : ControllerBase
     {
-        private readonly IContaCorrenteRepository _contaCorrenteRepository;
+        private readonly IIdempotenciaRepository _idempotenciaRepository;
         private readonly IMediator _mediator;
-        public ContaCorrenteController(IMediator mediator, IContaCorrenteRepository contaCorrenteRepository)
+        public ContaCorrenteController(IMediator mediator, IIdempotenciaRepository idempotenciaRepository)
         {
             _mediator = mediator;
-            _contaCorrenteRepository = contaCorrenteRepository;
+            _idempotenciaRepository = idempotenciaRepository;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<ContaCorrente>> Get()
-        {
-            var contas = await _contaCorrenteRepository.GetAllAsync();
-
-            return contas;
-        }
-
+        
         [HttpGet("id")]
-        public IActionResult Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            var response = _mediator.Send(new ConsultarSaldoContaRequest { IdContaCorrente = id });
+            var response = await _mediator.Send(new ConsultarSaldoContaRequest { IdContaCorrente = id });
 
             return Ok(response);
         }
 
         [HttpPost]
-        public IActionResult MovimentarConta([FromBody] MovimentarContaRequest command, [FromHeader(Name = "chaveIdempotencia")] string chaveIdempotencia)
+        public async Task<IActionResult> MovimentarConta([FromBody] MovimentarContaRequest command, [FromHeader(Name = "chaveIdempotencia")] string chaveIdempotencia)
         {
-            var response = _mediator.Send(command);
-            return Ok(response);
+            if (string.IsNullOrEmpty(chaveIdempotencia))
+            {
+                return BadRequest("Chave Idempotencia é obrigatório.");
+            }
+
+            var existingRequest = await _idempotenciaRepository.GetByIdAsync(chaveIdempotencia);
+            if (existingRequest != null)
+            {
+                return Ok(existingRequest.Resultado);
+            }
+            else
+            {
+                var response = await _mediator.Send(command);
+
+                await _idempotenciaRepository.AddAsync(new Idempotencia {
+                                                                          Chave_Idempotencia = chaveIdempotencia,
+                                                                          Requisicao = JsonConvert.SerializeObject(command),
+                                                                          Resultado = JsonConvert.SerializeObject(response)
+                                                        });
+
+                return Ok(response);
+            }            
         }
     }
 }
