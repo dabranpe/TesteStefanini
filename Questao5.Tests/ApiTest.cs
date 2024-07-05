@@ -41,6 +41,7 @@ namespace Questao5.Tests
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
+            Assert.Equal(response.StatusCode, System.Net.HttpStatusCode.OK);
             var responseString = await response.Content.ReadAsStringAsync();
             Assert.NotEmpty(responseString);
 
