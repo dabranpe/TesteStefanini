@@ -9,6 +9,7 @@ using Questao5.Application;
 using Newtonsoft.Json;
 using System.Text;
 using Questao5.Infrastructure;
+using Questao5.Domain.Entities;
 
 namespace Questao5.Tests
 {
@@ -117,7 +118,8 @@ namespace Questao5.Tests
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            _client.DefaultRequestHeaders.Add("chaveIdempotencia", "d594084d-f737-4cbf-aa77-6f4998c1f7dc");
+            var chaveIdempotencia = Guid.NewGuid().ToString();
+            _client.DefaultRequestHeaders.Add("chaveIdempotencia", chaveIdempotencia);
 
             // Act
             var response = await _client.PostAsync(url, content);
@@ -130,7 +132,25 @@ namespace Questao5.Tests
 
             var retorno = JsonConvert.DeserializeObject<MovimentarContaResponse>(responseString);
             Assert.NotNull(retorno);
-            Assert.Equal(retorno.IdMovimento, "982ffd04-f554-4ecc-b9ff-03176f5dddd2");
+            Assert.NotEmpty(retorno.IdMovimento);
+
+
+            var idMovimento = retorno.IdMovimento;
+
+            // Act 2
+            response = await _client.PostAsync(url, content);
+
+            // Assert 2
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+            Assert.Equal(response.StatusCode, System.Net.HttpStatusCode.OK);
+            responseString = await response.Content.ReadAsStringAsync();
+            Assert.NotEmpty(responseString);
+
+            retorno = JsonConvert.DeserializeObject<MovimentarContaResponse>(responseString);
+            Assert.NotNull(retorno);
+            Assert.NotEmpty(retorno.IdMovimento);
+
+            Assert.Equal(retorno.IdMovimento, idMovimento);
         }
     }
 }
