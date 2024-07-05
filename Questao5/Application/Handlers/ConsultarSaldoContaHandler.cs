@@ -34,6 +34,11 @@ public class ConsultarSaldoContaHandler : IRequestHandler<ConsultarSaldoContaReq
                                     somatorio.First(x => (int)x.TipoMovimento == (int)TipoMovimento.Debito).Valor : 0);
         }
 
-        return new ConsultarSaldoContaResponse { Saldo = valorCredito - valorDebito };
+        var conta = await _contaCorrenteRepository.GetByIdAsync(request.IdContaCorrente);
+
+        return new ConsultarSaldoContaResponse { NumeroConta = conta.Numero, 
+                                                 NomeTitularConta = conta.Nome,
+                                                 DataHoraConsulta = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+                                                 Saldo = valorCredito - valorDebito };
     }
 }

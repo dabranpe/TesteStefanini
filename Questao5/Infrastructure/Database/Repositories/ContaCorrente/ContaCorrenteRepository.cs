@@ -26,7 +26,7 @@ public class ContaCorrenteRepository : IContaCorrenteRepository
     {
         using (var connection = _context.CreateConnection())
         {
-            string query = $"SELECT IdContaCorrente, Numero, Nome, Ativo FROM ContaCorrente WHERE IdContaCorrente = '{id}'";
+            string query = $"SELECT IdContaCorrente, Numero, Nome, Ativo FROM ContaCorrente WHERE IdContaCorrente = '{id.Replace("'", "")}'";
             var conta = await connection.QuerySingleOrDefaultAsync<ContaCorrente>(query);
             return conta;
         }
@@ -46,7 +46,7 @@ public class ContaCorrenteRepository : IContaCorrenteRepository
     {
         using (var connection = _context.CreateConnection())
         {
-            string query = $"SELECT IdContaCorrente, TipoMovimento, SUM(Valor) Valor FROM Movimento WHERE IdContaCorrente = '{id}' GROUP BY IdContaCorrente, TipoMovimento ";
+            string query = $"SELECT IdContaCorrente, TipoMovimento, SUM(Valor) Valor FROM Movimento WHERE IdContaCorrente = '{id.Replace("'","")}' GROUP BY IdContaCorrente, TipoMovimento ";
             var soma = await connection.QueryAsync<SomatorioMovimento>(query);
             return soma;
         }

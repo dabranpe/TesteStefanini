@@ -20,7 +20,7 @@ public class MovimentarContaHandler : IRequestHandler<MovimentarContaRequest, Mo
     {
         await _validator.Validar(request);
 
-        var movimento = new Movimento(Guid.NewGuid().ToString(), request.IdContaCorrente, DateTime.Now.ToString("dd/MM/yyyy"), request.TipoMovimento, request.Valor);
+        var movimento = new Movimento(Guid.NewGuid().ToString(), request.IdContaCorrente.Replace("'",""), DateTime.Now.ToString("dd/MM/yyyy"), request.TipoMovimento, request.Valor);
 
         await _contaCorrenteRepository.AddMovimentoAsync(movimento);
 
