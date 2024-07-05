@@ -86,4 +86,4 @@ app.Run();
 // Informações úteis:
 // Tipos do Sqlite - https://www.sqlite.org/datatype3.html
 
-
+public partial class Program { }

@@ -12,7 +12,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Questao5.Infrastructure.Services.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ContaCorrenteController : ControllerBase
     {
         private readonly IIdempotenciaRepository _idempotenciaRepository;
@@ -29,7 +29,7 @@ namespace Questao5.Infrastructure.Services.Controllers
         /// </summary>
         /// <returns>Retorna Número da conta corrente, Nome do titular da conta corrente, Data e hora da resposta da consulta e Valor do Saldo atual
         ///</returns>
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Método para obter o saldo da conta corrente", Description = "Método para obter o saldo da conta corrente")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ConsultarSaldoContaResponse))]
