@@ -4,6 +4,10 @@ using Newtonsoft.Json;
 using Questao5.Application;
 using Questao5.Domain.Entities;
 using Questao5.Infrastructure.Database;
+using Questao5.Infrastructure.Services.Swagger;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
+
 
 namespace Questao5.Infrastructure.Services.Controllers
 {
@@ -19,17 +23,38 @@ namespace Questao5.Infrastructure.Services.Controllers
             _idempotenciaRepository = idempotenciaRepository;
         }
 
-        
+
+        /// <summary>
+        /// Método para obter o saldo da conta corrente.
+        /// </summary>
+        /// <returns>Retorna Número da conta corrente, Nome do titular da conta corrente, Data e hora da resposta da consulta e Valor do Saldo atual
+        ///</returns>
         [HttpGet("id")]
-        public async Task<IActionResult> Get(string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ConsultarSaldoContaResponse))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ConsultarSaldoContaResponseExample))]
+        [SwaggerRequestExample(typeof(ConsultarSaldoContaRequest), typeof(ConsultarSaldoContaRequestExample))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "Método para obter o saldo da conta corrente", Description = "Método para obter o saldo da conta corrente")]
+        public async Task<IActionResult> Get([SwaggerParameter(Description ="Identificador da Conta Corrente")] string id)
         {
             var response = await _mediator.Send(new ConsultarSaldoContaRequest { IdContaCorrente = id });
 
             return Ok(response);
         }
 
+        /// <summary>
+        /// Método para movimentar conta corrente.
+        /// </summary>
+        /// <param name="item">Método para movimentar conta corrente.</param>
+        /// <returns>ID do movimento</returns>
         [HttpPost]
-        public async Task<IActionResult> MovimentarConta([FromBody] MovimentarContaRequest command, [FromHeader(Name = "chaveIdempotencia")] string chaveIdempotencia)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerOperation(Summary = "Método para movimentar conta corrente", Description = "Método para movimentar conta corrente")]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(MovimentarContaResponse))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(MovimentarContaResponseExample))]
+        [SwaggerRequestExample(typeof(MovimentarContaRequest), typeof(MovimentarContaRequestExample))]
+        public async Task<IActionResult> MovimentarConta([FromBody, SwaggerRequestBody(Description ="Dados para movimentação da conta")] MovimentarContaRequest command, [FromHeader(Name = "chaveIdempotencia"), SwaggerParameter(Description ="Identificador da Requisição")] string chaveIdempotencia)
         {
             if (string.IsNullOrEmpty(chaveIdempotencia))
             {
