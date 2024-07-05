@@ -41,4 +41,14 @@ public class ContaCorrenteRepository : IContaCorrenteRepository
             return id;
         }
     }
+
+    public async Task<IEnumerable<SomatorioMovimento>> GetSomatorioMovimentoByIdContaAsync(string id)
+    {
+        using (var connection = _context.CreateConnection())
+        {
+            string query = $"SELECT IdContaCorrente, TipoMovimento, SUM(Valor) Valor FROM Movimento WHERE IdContaCorrente = '{id}' GROUP BY IdContaCorrente, TipoMovimento ";
+            var soma = await connection.QueryAsync<SomatorioMovimento>(query);
+            return soma;
+        }
+    }
 }

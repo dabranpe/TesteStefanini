@@ -4,9 +4,9 @@ namespace Questao5.Domain.Enumerators;
 
 public enum Validacoes
 {
-    [Description("Apenas contas correntes cadastradas podem receber movimentação")]
+    [Description("Apenas contas correntes cadastradas podem {0}")]
     INVALID_ACCOUNT = 1,
-    [Description("Apenas contas correntes ativas podem receber movimentação")]
+    [Description("Apenas contas correntes ativas podem {0}")]
     INACTIVE_ACCOUNT = 2,
     [Description("Apenas valores positivos podem ser recebidos")]
     INVALID_VALUE = 3,

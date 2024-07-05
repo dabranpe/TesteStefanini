@@ -11,6 +11,7 @@ public class MovimentarContaRequestValidator : AbstractValidator<MovimentarConta
     public MovimentarContaRequestValidator(IContaCorrenteRepository contaCorrenteRepository)
     {
         _contaCorrenteRepository = contaCorrenteRepository;
+        string complementoMensagem = "receber movimentação";
 
         RuleFor(x => x)
             .CustomAsync(async (request, context, cancellationToken) => {
@@ -18,11 +19,11 @@ public class MovimentarContaRequestValidator : AbstractValidator<MovimentarConta
                 var conta = await _contaCorrenteRepository.GetByIdAsync(request.IdContaCorrente);
 
                 if (conta is null)
-                    context.AddFailure(Validacoes.INVALID_ACCOUNT.GetDescription());
+                    context.AddFailure(string.Format(Validacoes.INVALID_ACCOUNT.GetDescription(), complementoMensagem));
                 else
                 {
                     if (conta.Ativo != (int)Ativo.Ativo)
-                        context.AddFailure(Validacoes.INACTIVE_ACCOUNT.GetDescription());
+                        context.AddFailure(string.Format(Validacoes.INACTIVE_ACCOUNT.GetDescription(), complementoMensagem));
                 }
 
                 if (request.Valor <=0)

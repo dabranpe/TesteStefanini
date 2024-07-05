@@ -26,6 +26,14 @@ namespace Questao5.Infrastructure.Services.Controllers
             return contas;
         }
 
+        [HttpGet("id")]
+        public IActionResult Get(string id)
+        {
+            var response = _mediator.Send(new ConsultarSaldoContaRequest { IdContaCorrente = id });
+
+            return Ok(response);
+        }
+
         [HttpPost]
         public IActionResult MovimentarConta([FromBody] MovimentarContaRequest command, [FromHeader(Name = "chaveIdempotencia")] string chaveIdempotencia)
         {
